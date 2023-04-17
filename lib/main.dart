@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import './screens/chat_screen.dart';
+import './screens/auth_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,8 +28,24 @@ class MyApp extends StatelessWidget {
       title: 'Chat app',
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepOrange,
+          secondary: Colors.brown,
+        ),
+        buttonTheme: ButtonTheme.of(context).copyWith(
+          textTheme: ButtonTextTheme.primary,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
       ),
-      home: const ChatScreen(),
+      home: const AuthScreen(),
     );
   }
 }
