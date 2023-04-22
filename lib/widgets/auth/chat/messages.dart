@@ -15,13 +15,17 @@ class Messages extends StatelessWidget {
         }
         final chatDocs = chatSnapshot.data!.docs;
         return ListView.builder(
+          reverse: true,
           itemBuilder: (context, index) => Text(
             chatDocs[index]['text'],
           ),
           itemCount: chatDocs.length,
         );
       },
-      stream: FirebaseFirestore.instance.collection('chat').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('chat')
+          .orderBy('createdAt', descending: true)
+          .snapshots(),
     );
   }
 }
