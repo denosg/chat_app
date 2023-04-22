@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({super.key});
+  AuthForm(this.submitFn, this.isLoading);
+
+  final void Function(
+    String email,
+    String password,
+    String username,
+    bool isLogin,
+  ) submitFn;
+  final bool isLoading;
 
   @override
   State<AuthForm> createState() => _AuthFormState();
@@ -22,8 +30,13 @@ class _AuthFormState extends State<AuthForm> {
 
     if (isValid) {
       _formKey.currentState!.save();
-
       // use the values to send our auth request to firebase
+      widget.submitFn(
+        _userEmail.trim(),
+        _userPassword.trim(),
+        _username.trim(),
+        _isLogin,
+      );
     }
   }
 
@@ -42,7 +55,7 @@ class _AuthFormState extends State<AuthForm> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextFormField(
-                    key: ValueKey('e-mail'),
+                    key: const ValueKey('e-mail'),
                     validator: (value) {
                       if (value == null || !value.contains('@')) {
                         return 'Please enter a valid e-mail address';
@@ -57,7 +70,7 @@ class _AuthFormState extends State<AuthForm> {
                   ),
                   if (!_isLogin)
                     TextFormField(
-                      key: ValueKey('username'),
+                      key: const ValueKey('username'),
                       validator: (value) {
                         if (value == null || value.length < 4) {
                           'Please enter at least 4 characters';
@@ -70,37 +83,41 @@ class _AuthFormState extends State<AuthForm> {
                       },
                     ),
                   TextFormField(
-                    key: ValueKey('password'),
+                    key: const ValueKey('password'),
                     validator: (value) {
                       if (value == null || value.length < 6) {
                         return 'Password must be at least 6 characters long.';
                       }
+                      return null;
                     },
-                    decoration: InputDecoration(labelText: 'password'),
+                    decoration: const InputDecoration(labelText: 'password'),
                     obscureText: true,
                     onSaved: (value) {
                       _userPassword = value!;
                     },
                   ),
                   const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: _trySubmit,
-                    child: Text(_isLogin ? 'login' : 'signup'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _isLogin = !_isLogin;
-                      });
-                    },
-                    child: Text(
-                      _isLogin
-                          ? 'Create new account'
-                          : 'I already have an account',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
+                  if (widget.isLoading) const CircularProgressIndicator(),
+                  if (!widget.isLoading)
+                    ElevatedButton(
+                      onPressed: _trySubmit,
+                      child: Text(_isLogin ? 'login' : 'signup'),
                     ),
-                  ),
+                  if (!widget.isLoading)
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isLogin = !_isLogin;
+                        });
+                      },
+                      child: Text(
+                        _isLogin
+                            ? 'Create new account'
+                            : 'I already have an account',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                      ),
+                    ),
                 ],
               ),
             ),
