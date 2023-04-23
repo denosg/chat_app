@@ -35,7 +35,7 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.all(8),
       padding: const EdgeInsets.all(8),
       child: Row(
         children: [
