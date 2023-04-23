@@ -30,9 +30,11 @@ class _AuthScreenState extends State<AuthScreen> {
     UserCredential authResult;
     try {
       if (isLogin) {
-        setState(() {
-          _isLoading = true;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoading = true;
+          });
+        }
         authResult = await _auth.signInWithEmailAndPassword(
             email: email, password: password);
       } else {
@@ -46,17 +48,22 @@ class _AuthScreenState extends State<AuthScreen> {
 
         await ref.putFile(image!);
 
+        final url = await ref.getDownloadURL();
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user!.uid)
             .set({
           'username': username,
           'email': email,
+          'image_url': url,
         });
       }
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } on PlatformException catch (e) {
       var message = 'An error occured, please check your credentials';
 
@@ -67,14 +74,13 @@ class _AuthScreenState extends State<AuthScreen> {
         content: Text(message),
         backgroundColor: Theme.of(context).colorScheme.error,
       ));
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } catch (err) {
       print(err);
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
