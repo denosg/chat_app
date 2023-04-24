@@ -12,8 +12,6 @@ void main() async {
   await Firebase.initializeApp();
   //Loads the API key for firebase
   await dotenv.load(fileName: ".env");
-  //Makes it so SystemChrome.setPreferredOrientations works
-  WidgetsFlutterBinding.ensureInitialized();
   //Sets preffered orientations
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   //Runs the app on boot
